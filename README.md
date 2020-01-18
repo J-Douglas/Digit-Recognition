@@ -1,1 +1,1 @@
-# Digit-Recognition-NN
+# Handwritten Digit Recognition Neural Network
