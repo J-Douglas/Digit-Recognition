@@ -44,16 +44,16 @@ ANN_model.compile(
 )
 
 # Training the model
-epoch_count = 50
+epoch_count = 90
 ANN_model.fit(
     train_images, 
     to_categorical(train_labels), 
     epochs=epoch_count,
-    batch_size=60
+    batch_size=120
 )
 
 # Saving the model
-ANN_model.save_weights('ANN_Model_{}.h5'.format(epoch_count))
+ANN_model.save_weights('models/ANN_Model_{}.h5'.format(epoch_count))
 
 test_pred = pd.DataFrame(ANN_model.predict(test_images, batch_size=60))
 test_pred = pd.DataFrame(test_pred.idxmax(axis = 1))
@@ -61,5 +61,5 @@ test_pred.index.name = 'ImageId'
 test_pred = test_pred.rename(columns = {0: 'Label'}).reset_index()
 test_pred['ImageId'] = test_pred['ImageId'] + 1
 
-test_pred.to_csv('mnist_submission.csv', index = False)
+test_pred.to_csv('submissions/submission_.csv', index = False)
 
