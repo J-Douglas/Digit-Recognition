@@ -1,3 +1,4 @@
+import os
 import numpy as np 
 import mnist
 from keras.models import Sequential
@@ -36,12 +37,12 @@ ANN_model.compile(
 )
 
 # Training the model
-epoch_count = 60
+epoch_count = 20
 ANN_model.fit(
     train_images, 
     to_categorical(train_labels), 
     epochs=epoch_count,
-    batch_size=150
+    batch_size=80
 )
 
 # Saving the model
