@@ -54,7 +54,7 @@ ANN_model.fit(
 )
 
 # Saving the model
-ANN_model.save_weights('models/ANN_Model_{}.h5'.format(epoch_count))
+ANN_model.save_weights('ANN-models/ANN_Model_{}.h5'.format(epoch_count))
 
 test_pred = pd.DataFrame(ANN_model.predict(test_images, batch_size=60))
 test_pred = pd.DataFrame(test_pred.idxmax(axis = 1))
