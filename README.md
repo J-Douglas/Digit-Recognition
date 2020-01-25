@@ -1,4 +1,5 @@
 # Digit Recognition
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This repository showcases my submissions to the Kaggle Digit Recognizer Competition. The goal of the competition is to create a model which accurately classifies handwritten digits. The competition uses the MNIST ("Modified National Institute of Standards and Technology") dataset to train and test models. Below are two examples of handwritten digits from the MNIST data set. For my first attempt I created an artificial neural network (ANN) which I created in Python using TensorFlow and Keras. More details about the model and my work on this competition are detailed in the sections below.
 
