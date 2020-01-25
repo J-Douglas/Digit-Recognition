@@ -11,5 +11,5 @@ My best ANN model was 97.6% accurate on Kaggle's testing dataset. It had 5 layer
 
 ## Next Steps
 
-I've learned that ANN models have a ceiling of 99% accuracy and to break the 99% barrier a CNN must be used. Here is a link to a post discussing the capabilities of various models in digit recognition:https://www.kaggle.com/c/digit-recognizer/discussion/61480. I am now working on making a CNN to make a more accurate model than the one created from my ANN.
+I've learned that ANN models have a ceiling of 99% accuracy and to break the 99% barrier a CNN must be used. Here is a link to a post discussing the capabilities of various models in digit recognition: https://www.kaggle.com/c/digit-recognizer/discussion/61480. I am now working on making a CNN to make a more accurate model than the one created from my ANN.
 
