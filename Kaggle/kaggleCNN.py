@@ -66,7 +66,7 @@ CNN_model.summary()
 epoch_count = 10
 batch_count = 60
 
-# Data Augmentation Version
+# Data Augmentation Version 1
 # for e in range(epoch_count):
 # 	print("Epoch: {}".format(e))
 # 	batches = 0
@@ -76,10 +76,42 @@ batch_count = 60
 # 			if batches >= len(train_images)//100:
 # 				break
 
+### Data Augmentation Version 2
+def augment_data(dataset, dataset_labels, augementation_factor=1, use_random_rotation=True, use_random_shear=True, use_random_shift=True, use_random_zoom=True):
+	augmented_image = []
+	augmented_image_labels = []
+
+	for num in range (0, dataset.shape[0]):
+
+		for i in range(0, augementation_factor):
+			# original image:
+			augmented_image.append(dataset[num])
+			augmented_image_labels.append(dataset_labels[num])
+
+			if use_random_rotation:
+				augmented_image.append(tf.keras.preprocessing.image.random_rotation(dataset[num], 20, row_axis=0, col_axis=1, channel_axis=2))
+				augmented_image_labels.append(dataset_labels[num])
+
+			if use_random_shear:
+				augmented_image.append(tf.keras.preprocessing.image.random_shear(dataset[num], 0.2, row_axis=0, col_axis=1, channel_axis=2))
+				augmented_image_labels.append(dataset_labels[num])
+
+			if use_random_shift:
+				augmented_image.append(tf.keras.preprocessing.image.random_shift(dataset[num], 0.2, 0.2, row_axis=0, col_axis=1, channel_axis=2))
+				augmented_image_labels.append(dataset_labels[num])
+
+			if use_random_zoom:
+				augmented_image.append(tf.keras.preprocessing.image.random_zoom(dataset[num], (0.9,0.9), row_axis=0, col_axis=1, channel_axis=2))
+				augmented_image_labels.append(dataset_labels[num])
+
+	return np.array(augmented_image), np.array(augmented_image_labels)
+
+augmented_train_images, augmented_train_labels = augment_data(train_images, train_labels)
+
 # Training with regular dataset
 CNN_model.fit(
-	train_images,
-	train_labels,
+	augmented_train_images,
+	augmented_train_labels,
 	epochs=epoch_count,
 	batch_size=batch_count)
 
