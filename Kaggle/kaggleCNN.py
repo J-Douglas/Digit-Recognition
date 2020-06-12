@@ -2,6 +2,7 @@
 # It is defined by the kaggle/python docker image: https://github.com/kaggle/docker-python
 # For example, here's several helpful packages to load in 
 
+import tensorflow as tf
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import keras
@@ -9,23 +10,45 @@ from keras.models import Sequential
 from keras.layers import *
 from keras.utils import to_categorical
 from keras.datasets import mnist
+from keras.preprocessing.image import ImageDataGenerator
 
 # Any results you write to the current directory are saved as output.
 
-(train_images, train_labels), (test_images, test_labels) = mnist.load_data()
-train_images = train_images.reshape((60000, 28, 28, 1))
-train_images = train_images.astype(float32) / 255
-test_images = test_images.reshape((10000, 28, 28, 1))
-test_images = test_images.astype(‘float32’) / 255
+### Load directly from MNIST dataset
+# (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
+
+## Loading dataframe from Kaggle dataset
+train_dataset = pd.read_csv('datasets/train.csv')
+test_dataset = pd.read_csv('datasets/test.csv')
+
+train_dataset.head()
+
+train_images = train_dataset.iloc[:, 1:785]
+train_labels = train_dataset.iloc[:, 0]
+
+test_images = test_dataset.iloc[:, 0:784]
+
+train_images = train_images.to_numpy().reshape((42000, 28, 28, 1))
+
+test_images = test_images.to_numpy().reshape((28000, 28, 28, 1))
+
+### Data augmentation to move images around
+# datagen = ImageDataGenerator(
+# 	rotation_range=15,
+# 	width_shift_range=0.1,
+# 	height_shift_range=0.1)
+
 train_labels = to_categorical(train_labels)
-test_labels = to_categorical(test_labels)
 
 # Building the model
 CNN_model = Sequential()
-CNN_model.add(layers.Conv2D(32,(5,5),activation=’relu’,input_shape=(28,28,1)))
-CNN_model.add(layers.MaxPooling2D((2, 2)))
-CNN_model.add(layers.Conv2D(64, (5, 5), activation=’relu’))
-CNN_model.add(layers.MaxPooling2D((2, 2)))
+CNN_model.add(Conv2D(32,(5,5), activation='relu', input_shape=(28,28,1)))
+CNN_model.add(MaxPooling2D((2, 2)))
+CNN_model.add(Conv2D(64, (5, 5), activation='relu'))
+CNN_model.add(MaxPooling2D((2, 2)))
+CNN_model.add(Conv2D(128, (3, 3), activation='relu'))
+CNN_model.add(MaxPooling2D((2, 2)))
+CNN_model.add(Flatten())
 CNN_model.add(Dense(10, activation='softmax'))
 
 # Compiling the model
@@ -35,11 +58,38 @@ CNN_model.compile(
   metrics=['accuracy']
 )
 
-# Training the model
-epoch_count = 90
+CNN_model.summary()
+
+# print("\nTraining images numpy shape: {}\n".format(train_images.shape))
+# print("Training labels numpy shape: {}\n".format(train_labels.shape))
+
+epoch_count = 10
+batch_count = 60
+
+# Data Augmentation Version
+# for e in range(epoch_count):
+# 	print("Epoch: {}".format(e))
+# 	batches = 0
+# 	for x_batch, y_batch in datagen.flow(train_images,train_labels, batch_size=50):
+# 			CNN_model.fit(x_batch,y_batch)
+# 			batches += 1
+# 			if batches >= len(train_images)//100:
+# 				break
+
+# Training with regular dataset
 CNN_model.fit(
-    train_images, 
-    to_categorical(train_labels), 
-    epochs=epoch_count,
-    batch_size=120
-)
+	train_images,
+	train_labels,
+	epochs=epoch_count,
+	batch_size=batch_count)
+
+# Saving the model
+CNN_model.save_weights('CNN-models/CNN_Model_{}.h5'.format(epoch_count))
+
+test_pred = pd.DataFrame(CNN_model.predict(test_images, batch_size=batch_count))
+test_pred = pd.DataFrame(test_pred.idxmax(axis = 1))
+test_pred.index.name = 'ImageId'
+test_pred = test_pred.rename(columns = {0: 'Label'}).reset_index()
+test_pred['ImageId'] = test_pred['ImageId'] + 1
+
+test_pred.to_csv('submissions/submission_4.csv', index = False)

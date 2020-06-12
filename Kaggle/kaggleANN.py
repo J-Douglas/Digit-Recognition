@@ -16,15 +16,17 @@ train_labels = train_dataset.iloc[:, 0]
 
 test_images = test_dataset.iloc[:, 0:784]
 
-train_images = train_images.as_matrix().reshape(42000, 784)
+train_images = train_images.to_numpy().reshape(42000, 784)
 
-test_images = test_images.as_matrix().reshape(28000, 784)
+test_images = test_images.to_numpy().reshape(28000, 784)
 
 train_images = (train_images/255)-0.7
+
 test_images = (test_images/255)-0.7
 
 # Flattening the images into a 784 dimensional vector
 train_images = train_images.reshape((-1, 784))
+
 test_images = test_images.reshape((-1,784))
 
 # Building the model
