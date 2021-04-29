@@ -63,8 +63,8 @@ CNN_model.summary()
 # print("\nTraining images numpy shape: {}\n".format(train_images.shape))
 # print("Training labels numpy shape: {}\n".format(train_labels.shape))
 
-epoch_count = 10
-batch_count = 60
+epoch_count = 20
+batch_count = 120
 
 # Data Augmentation Version 1
 # for e in range(epoch_count):
@@ -124,4 +124,4 @@ test_pred.index.name = 'ImageId'
 test_pred = test_pred.rename(columns = {0: 'Label'}).reset_index()
 test_pred['ImageId'] = test_pred['ImageId'] + 1
 
-test_pred.to_csv('submissions/submission_4.csv', index = False)
+test_pred.to_csv('submissions/submission_5.csv', index = False)
